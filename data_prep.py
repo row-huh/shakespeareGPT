@@ -1,15 +1,3 @@
-# data preparation and sampling
-
-import tiktoken
-
-tokenizer = tiktoken.get_encoding("gpt2")
-
-with open('training_text/text.txt', 'r') as f :
-    raw_text = f.read()
-    print("Total length of words: ", len(raw_text.split(' ')))
-
-
-encoded_text = tokenizer.encode(raw_text)
 
 # creating input-target predictions
 # to make sure the context size iterates over the entire dataset, 
@@ -17,7 +5,7 @@ encoded_text = tokenizer.encode(raw_text)
 
 import torch
 from torch.utils.data import Dataset, DataLoader
-
+import tiktoken
 
 # inherited from torch's built in gptdatasetv1 class
 class GPTDatasetV1(Dataset):
@@ -39,3 +27,19 @@ class GPTDatasetV1(Dataset):
     
     def __getitem__(self, idx):
         return self.input_ids[idx], self.target_ids[idx]
+    
+    
+# batchsize is the amount of input/target arrays to returned. Emphasis on 'arrays', not items. You get items from max_length
+def create_dataloader_v1(txt, batch_size=4, max_length=256, stride=128, shuffle=True, drop_last=True, num_workers=0):
+    tokenizer = tiktoken.get_encoding("gpt2")
+    dataset = GPTDatasetV1(txt, tokenizer, max_length, stride)
+    dataloader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        drop_last=drop_last,
+        num_workers=num_workers
+    )
+    
+    return dataloader
+

@@ -1,6 +1,5 @@
 import torch
 
-
 # data preparation and sampling
 # data preparation and sampling
 
@@ -16,7 +15,7 @@ with open('training_text/text.txt', 'r') as f :
 
 
 dataloader = create_dataloader_v1(
-    raw_text, batch_size=1, max_length=4, stride=1, shuffle=False
+    raw_text, batch_size=1, max_length=6, stride=1, shuffle=False
 )
 
 data_iter = iter(dataloader)
@@ -24,6 +23,10 @@ first_batch = next(data_iter)
 print("First Batch:\n", first_batch)
 second_batch = next(data_iter)
 print("Second Batch:\n", second_batch)
+
+
+
+# embeding layers
 
 
 # attention mechanisms

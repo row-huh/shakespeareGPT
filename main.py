@@ -3,7 +3,7 @@ import torch
 # data preparation and sampling
 
 import tiktoken
-from data_prep import GPTDatasetV1, create_dataloader_v1
+from data_prep import create_dataloader_v1
 
 tokenizer = tiktoken.get_encoding("gpt2")
 

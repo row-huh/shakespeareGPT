@@ -14,20 +14,32 @@ with open('training_text/text.txt', 'r') as f :
     print("Total length of words: ", len(raw_text.split(' ')))
 
 
+
+
+# setup embedding layer (relative positional embeddings)
+vocab_size = 50257
+output_dim = 256
+token_embedding_layer = torch.nn.Embedding(vocab_size, output_dim)
+
 dataloader = create_dataloader_v1(
-    raw_text, batch_size=1, max_length=6, stride=1, shuffle=False
+    raw_text, batch_size=4, max_length=6, stride=1, shuffle=False
 )
 
 data_iter = iter(dataloader)
-first_batch = next(data_iter)
-print("First Batch:\n", first_batch)
-second_batch = next(data_iter)
-print("Second Batch:\n", second_batch)
+inputs, targets = next(data_iter)
+print("Token IDs :\n", inputs)
+print("\n Inputs SHape:\n", inputs)
+
+# convert into relative positional embeddings
+token_embeddings = token_embedding_layer(inputs)
+print(token_embeddings.shape)
 
 
-
-# embeding layers
-
+# embedding layers (absolute positional embeddings)
+context_length = 4
+pos_embedding_layer = torch.nn.Embedding(context_length, output_dim)
+pos_embeddings = pos_embedding_layer(torch.arange(context_length))
+print(pos_embeddings.shape)
 
 # attention mechanisms
 

@@ -1,7 +1,6 @@
 import torch
 
 # data preparation and sampling
-# data preparation and sampling
 
 import tiktoken
 from data_prep import GPTDatasetV1, create_dataloader_v1
@@ -12,9 +11,6 @@ tokenizer = tiktoken.get_encoding("gpt2")
 with open('training_text/text.txt', 'r') as f :
     raw_text = f.read()
     print("Total length of words: ", len(raw_text.split(' ')))
-
-
-
 
 # setup embedding layer (relative positional embeddings)
 vocab_size = 50257
@@ -27,19 +23,22 @@ dataloader = create_dataloader_v1(
 
 data_iter = iter(dataloader)
 inputs, targets = next(data_iter)
-print("Token IDs :\n", inputs)
-print("\n Inputs SHape:\n", inputs)
 
 # convert into relative positional embeddings
 token_embeddings = token_embedding_layer(inputs)
-print(token_embeddings.shape)
-
 
 # embedding layers (absolute positional embeddings)
-context_length = 4
+context_length = 6
 pos_embedding_layer = torch.nn.Embedding(context_length, output_dim)
 pos_embeddings = pos_embedding_layer(torch.arange(context_length))
-print(pos_embeddings.shape)
+
+# token embeddings are for semantic meaning 
+# positional Embeddings are for contextual meaning
+# by adding both, you get semantic and contextual meaning
+# Does it make sense in my brain how adding 2 vectors somehow makes it mathematically better ? No - but whatever
+input_embeddings = token_embeddings + pos_embeddings
+print(input_embeddings.shape)
+
 
 # attention mechanisms
 

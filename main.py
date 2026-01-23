@@ -37,6 +37,8 @@ print("Total characters: ", total_characters)
 print("Total tokens: ", total_tokens) 
 
 
+
+
 # training loop
 
 # model evaluation

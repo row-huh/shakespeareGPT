@@ -1,7 +1,7 @@
 import torch
 
-# data preparation and sampling
 
+# data preparation and sampling
 import tiktoken
 from data_prep import create_dataloader_v1
 from architecture import GPTModel
@@ -17,6 +17,7 @@ GPT_CONFIG_124M = {
     "qkv_bias": False
 }
 
+
 torch.manual_seed(123)
 model = GPTModel(GPT_CONFIG_124M)
 # print(model.eval())
@@ -28,18 +29,51 @@ model = GPTModel(GPT_CONFIG_124M)
 tokenizer = tiktoken.get_encoding('gpt2')
 
 with open('training_text/text.txt', 'r') as f:
-    raw_text = f.read()
+    text = f.read()
 
-total_characters = len(raw_text)
-total_tokens = len(tokenizer.encode(raw_text))
+total_characters = len(text)
+total_tokens = len(tokenizer.encode(text))
 
 print("Total characters: ", total_characters)
 print("Total tokens: ", total_tokens) 
 
 
-
-
 # training loop
+
+train_ratio = 0.90
+split_index = int(train_ratio * len(text))
+train_data = text[:split_index]
+val_data = text[split_index:]
+
+
+train_loader  = create_dataloader_v1(
+    train_data,
+    batch_size=2,
+    max_length=GPT_CONFIG_124M["context_length"],
+    stride = GPT_CONFIG_124M["context_length"],
+    drop_last=True,
+    shuffle=True,
+    num_workers=0
+)
+
+val_loader = create_dataloader_v1(
+    val_data,
+    batch_size=2,
+    max_length=GPT_CONFIG_124M["context_length"],
+    stride = GPT_CONFIG_124M["context_length"],
+    drop_last=False,
+    shuffle=False,
+    num_workers=0
+)
+
+
+print("Train Loader: ")
+for x,y in train_loader:
+    print(x.shape, y.shape)
+    
+print("\nValidation loader: ")
+for x,y in val_loader:
+    print(x.shape, y.shape)
 
 # model evaluation
 

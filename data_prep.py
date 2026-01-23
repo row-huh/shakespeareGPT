@@ -13,7 +13,9 @@ class GPTDatasetV1(Dataset):
         self.input_ids = []
         self.target_ids = []
         
-        token_ids = tokenizer.encode(txt)
+        token_ids = tokenizer.encode(txt, allowed_special={"<|endoftext|>"})
+        assert len(token_ids) > max_length, "Number of tokenized inputs must be greater than or atleast equal to max_length+1"
+        
         
         for i in range(0, len(token_ids) - max_length, stride):
             input_chunk = token_ids[i:i + max_length]

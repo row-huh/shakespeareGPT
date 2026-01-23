@@ -15,6 +15,7 @@ GPT_CONFIG_124M = {
 
 class GPTModel(nn.Module):
     def __init__(self, cfg):
+        super().__init__()
         self.tok_emb = nn.Embedding(cfg["vocab_size"], cfg["emb_dim"])
         self.pos_emb = nn.Embedding(cfg["context_length"], cfg["emb_dim"])
         self.drop_emb = nn.Dropout(cfg["drop_rate"])
@@ -160,5 +161,3 @@ class TransformerBlock(nn.Module):
         x = x + shortcut  # Add the original input back
 
         return x
-
-                    

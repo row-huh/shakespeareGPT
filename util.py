@@ -1,4 +1,6 @@
 import torch
+import matplotlib.pyplot as plt
+from  matplotlib.ticker import MaxNLocator
 
 def calc_loss_batch(input_batch, target_batch, model,  device):
     input_batch = input_batch.to(device)
@@ -9,6 +11,8 @@ def calc_loss_batch(input_batch, target_batch, model,  device):
     )
     
     return loss
+
+
 
 
 def calc_loss_loader(data_loader, model, device, num_batches=None):
@@ -119,3 +123,19 @@ def text_to_tokens(raw_text, tokenizer):
 def tokens_to_text(tokenized, tokenizer):
     flat = tokenized.squeeze(0)
     return tokenizer.decode(flat.tolist())
+
+
+def plot_losses(epochs_seen, tokens_seen, train_losses, val_losses):
+    fig, ax1 = plt.subplots(figsize=(5, 3))
+    ax1.plot(epochs_seen, train_losses,label="Training loss")
+    ax1.plot(
+        epochs_seen, val_losses, linestyle="-.", label="Validation loss"
+    )
+    ax1.set_xlabel("Epochs")
+    ax1.set_ylabel("Loss")
+    ax1.legend(loc="upper right")
+    ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax2 = ax1.twiny()
+    ax2.set_xlabel("Tokens seen")
+    fig.tight_layout()
+    plt.show()

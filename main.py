@@ -5,8 +5,7 @@ import torch
 import tiktoken
 from data_prep import create_dataloader_v1
 from architecture import GPTModel
-from util import calc_loss_loader, calc_loss_batch
-
+from util import *
 
 GPT_CONFIG_124M = {
     "vocab_size":50257,
@@ -39,7 +38,7 @@ print("Total characters: ", total_characters)
 print("Total tokens: ", total_tokens) 
 
 
-# training loop
+# splitting into training and validation batches
 
 train_ratio = 0.90
 split_index = int(train_ratio * len(text))
@@ -77,6 +76,7 @@ for x,y in val_loader:
     print(x.shape, y.shape)
 
 
+# calculating loss before training
 device = torch.device('gpu')
 model.to(device)
 
@@ -87,6 +87,23 @@ with torch.no_grad():
 print("Training loss: ", train_loss)
 print("Validation loss: ", val_loss)
 
-# model evaluation
 
+
+torch.manual_seed(123)
+model = GPTModel(GPT_CONFIG_124M)
+model.to(device)
+optimizer = torch.optim.AdamW(
+    model.parameters(),
+    lr=0.0004,  weight_decay=0.1
+)
+num_epochs = 10
+
+train_losses, val_losses, tokens_seen = train_model_simple(
+    model, train_loader, val_loader, optimizer, device,
+    num_epochs=num_epochs, eval_freq=5,  eval_iter=5,
+    start_context="Thou art the", tokenizer=tokenizer
+)
+
+epochs_tensor = torch.linspace(0, num_epochs, len(train_losses))
+plot_losses(epochs_tensor, tokens_seen, train_losses, val_losses)
 # saving weights

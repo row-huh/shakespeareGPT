@@ -5,6 +5,7 @@ import torch
 import tiktoken
 from data_prep import create_dataloader_v1
 from architecture import GPTModel
+from util import calc_loss_loader, calc_loss_batch
 
 
 GPT_CONFIG_124M = {
@@ -74,6 +75,17 @@ for x,y in train_loader:
 print("\nValidation loader: ")
 for x,y in val_loader:
     print(x.shape, y.shape)
+
+
+device = torch.device('gpu')
+model.to(device)
+
+with torch.no_grad():
+    train_loss = calc_loss_loader(train_loader, model, device)
+    val_loss = calc_loss_loader(val_loader, model, device)
+    
+print("Training loss: ", train_loss)
+print("Validation loss: ", val_loss)
 
 # model evaluation
 

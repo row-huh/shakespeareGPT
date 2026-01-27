@@ -47,12 +47,3 @@ def create_dataloader_v1(txt, batch_size=4, max_length=256, stride=128, shuffle=
 
 
 
-# helper functions 
-def text_to_tokens(raw_text, tokenizer):
-    encoded = tokenizer.encode(raw_text)
-    encoded_tensor = torch.tensor(encoded).unsqueeze(0)
-    return encoded
-
-def tokens_to_text(tokenized, tokenizer):
-    flat = tokenized.squeeze(0)
-    return tokenizer.decode(flat.tolist())

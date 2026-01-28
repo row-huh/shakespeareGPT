@@ -118,7 +118,7 @@ def generate_and_print_sample(model, tokenizer, device, start_context):
 def text_to_tokens(raw_text, tokenizer):
     encoded = tokenizer.encode(raw_text)
     encoded_tensor = torch.tensor(encoded).unsqueeze(0)
-    return encoded
+    return encoded_tensor
 
 def tokens_to_text(tokenized, tokenizer):
     flat = tokenized.squeeze(0)

@@ -86,6 +86,9 @@ def evaluate_model(model, train_loader, val_loader, device, eval_iter):
 
 
 def generate_text_simple(model, idx, max_new_tokens, context_size):
+    device = next(model.parameters()).device
+    idx = idx.to(device)
+    
     for _ in range(max_new_tokens):
         idx_cond = idx[:, -context_size:]
         with torch.no_grad():

@@ -77,7 +77,7 @@ for x,y in val_loader:
 
 
 # calculating loss before training
-device = torch.device('gpu')
+device = torch.device('cuda')
 model.to(device)
 
 with torch.no_grad():
@@ -106,4 +106,19 @@ train_losses, val_losses, tokens_seen = train_model_simple(
 
 epochs_tensor = torch.linspace(0, num_epochs, len(train_losses))
 plot_losses(epochs_tensor, tokens_seen, train_losses, val_losses)
+
+
+model.to("cpu")
+model.eval()
+
+tokenizer = tiktoken.get_encoding("gpt2")
+token_ids = generate_text_simple(
+    model=model,
+    idx=text_to_tokens("Every effort moves you", tokenizer),
+    max_new_tokens=25,
+    context_size=GPT_CONFIG_124M["context_length"]
+)
+print("Output text: \n", tokens_to_text(token_ids, tokenizer))
+
 # saving weights
+torch.save(model.state_dict(), 'model.pth')

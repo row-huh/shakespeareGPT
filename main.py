@@ -9,7 +9,7 @@ from util import *
 
 GPT_CONFIG_124M = {
     "vocab_size":50257,
-    "context_length": 25,
+    "context_length": 256,
     "emb_dim": 768,
     "n_heads": 12,
     "n_layers": 12,
@@ -28,7 +28,7 @@ model = GPTModel(GPT_CONFIG_124M)
 
 tokenizer = tiktoken.get_encoding('gpt2')
 
-with open('training_text/short.txt', 'r') as f:
+with open('training_text/text.txt', 'r') as f:
     text = f.read()
 
 total_characters = len(text)
@@ -120,7 +120,7 @@ tokenizer = tiktoken.get_encoding("gpt2")
 token_ids = generate_text_simple(
     model=model,
     idx=text_to_tokens("Thou art the", tokenizer),
-    max_new_tokens=25,
+    max_new_tokens=256,
     context_size=GPT_CONFIG_124M["context_length"]
 )
 print("Output text: \n", tokens_to_text(token_ids, tokenizer))
